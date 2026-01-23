@@ -1,0 +1,3 @@
+PassengerAppRoot "/home/wofabpqk/billing-app"
+PassengerBaseURI "/billing-app"
+PassengerPython "/home/wofabpqk/virtualenv/billing-app/3.8/bin/python"
