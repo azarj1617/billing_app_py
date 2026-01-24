@@ -23,7 +23,7 @@ class PriceDetails(db.Model):
             "priceId" : self.price_id,
             "itemId" : self.item_id,
             "mrp" : self.mrp, 
-            "SellingPrice" : self.selling_price, 
+            "sellingPrice" : self.selling_price, 
             "saveValue" : self.save_value,
             "wholeSalePrice" : self.whole_sale_price,
             "costPrice" : self.cost_price,
@@ -34,7 +34,7 @@ class PriceDetails(db.Model):
             "price_id": data.get("priceId"),
             "item_id": data.get("itemId"),
             "mrp":data.get("mrp"),
-            "selling_price":data.get("SellingPrice"),
+            "selling_price":data.get("sellingPrice"),
             "save_value":data.get("saveValue"),
             "whole_sale_price":data.get("wholeSalePrice"),
             "cost_price":data.get("costPrice")
