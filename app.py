@@ -7,10 +7,18 @@ from config import Config
 from extensions import db
 import os
 from flask_jwt_extended import JWTManager
+from flask_cors import CORS
 
 def create_app():
     load_dotenv()
     app = Flask(__name__)
+    CORS(
+    app,
+    resources={r"/*": {"origins": ["http://localhost:4200"]}},
+    supports_credentials=True,
+    allow_headers=["Content-Type", "Authorization"],
+    methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+    )
     app.config.from_object(Config)
     app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "super-secret-default-key")
     app.config['JWT_SECRET_KEY'] = os.environ.get('JWT_SECRET_KEY',"super-jwt-secret-key")

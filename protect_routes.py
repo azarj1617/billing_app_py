@@ -7,12 +7,15 @@ def protect_routes(app):
     # -------------------------
     @app.before_request
     def protected_routes():
-        # List of public routes that don't require JWT
-        public_routes = ["/auth/login", "/refresh"]
+        # ✅ MUST allow preflight
+        if request.method == "OPTIONS":
+            return "", 200
 
-        if request.path in public_routes:
-            return  # Skip JWT check
 
+        # ✅ Allow auth routes (VERY IMPORTANT)
+        if "/auth/" in request.path:
+            return None # Skip JWT check
+       
         # Enforce JWT check
         try:
             jwt_required()(lambda: None)()
