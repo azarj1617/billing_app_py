@@ -12,7 +12,8 @@ def create_app():
     load_dotenv()
     app = Flask(__name__)
     app.config.from_object(Config)
-    app.config['JWT_SECRET_KEY'] = os.environ.get('JWT_SECRET_KEY')
+    app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "super-secret-default-key")
+    app.config['JWT_SECRET_KEY'] = os.environ.get('JWT_SECRET_KEY',"super-jwt-secret-key")
     app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(minutes=30) # short-lived
     app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(days=30) # long-lived
     JWTManager(app)
