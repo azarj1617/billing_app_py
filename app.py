@@ -14,8 +14,8 @@ def create_app():
     app = Flask(__name__)
     CORS(
     app,
-    resources={r"/*": {"origins": ["http://localhost:4200","http://www.wofaa.in"]}},
-    supports_credentials=True,
+    resources={r"/*": {"origins": "*"}},
+    supports_credentials=False,
     allow_headers=["Content-Type", "Authorization"],
     methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"]
     )
