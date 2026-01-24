@@ -16,6 +16,8 @@ instance/
 # Environment variables
 .env
 config.py
+passenger_wsgi.py
+stderr.log
 
 # Uploads
 uploads/
@@ -28,3 +30,6 @@ media/
 # OS
 .DS_Store
 Thumbs.db
+
+#more files to excude
+
