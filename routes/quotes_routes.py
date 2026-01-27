@@ -8,7 +8,7 @@ quotes_bp = Blueprint('quotes_bp', __name__,url_prefix='/quotes')
 def get_all_quotes():
     return get_all_quotes_serv()
 
-@quotes_bp.route('/getQuotesByDate', methods=['GET'])
+@quotes_bp.route('/getQuotesByDate', methods=['POST'])
 def get_quotes_by_date():
     data = request.get_json()
     return get_quotes_by_date_serv(data)
