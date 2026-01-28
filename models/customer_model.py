@@ -16,6 +16,12 @@ class Customer(db.Model):
     price_type = db.Column(db.Integer)
     cus_old_no = db.Column(db.String(100))
     created_by = db.Column(db.Date,default=datetime.now())
+    quotes = db.relationship(
+        "QuoteMaster",
+        backref="customer",
+        lazy="select",   # good for GET APIs
+        cascade="all, delete-orphan"
+    )
     def __repr__(self):
         return f"<Customer {self.name}>"
 

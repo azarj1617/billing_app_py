@@ -22,3 +22,4 @@ def get_quotes_by_id():
 def get_quote_no():
     resp = dict(quoteNo=get_quote_no_serv())
     return jsonify(resp)
+

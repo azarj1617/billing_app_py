@@ -18,13 +18,13 @@ def get_quotes_by_date_dao(data):
     quotesList = QuoteMaster.query.filter(
                  QuoteMaster.quote_date >= start_date,
                  QuoteMaster.quote_date <= end_date
-                ).all()
+                ).order_by(desc(QuoteMaster.quote_seq_no)).all()
     return jsonify([u.to_quote_dict() for u in quotesList])
 
 def get_quote_by_id_dao(quoteId):
     quotesList = QuoteMaster.query.filter(
                  QuoteMaster.quote_id == quoteId
-                ).all()
+                ).order_by(desc(QuoteMaster.quote_seq_no)).all()
     return jsonify([u.to_quote_dict() for u in quotesList])
 
 def get_quote_no_dao():
