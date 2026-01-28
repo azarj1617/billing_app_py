@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from Services.QuoteService import get_all_quotes_serv, get_quotes_by_date_serv, get_quote_by_id_serv
+from Services.QuoteService import get_all_quotes_serv, get_quote_no_serv, get_quotes_by_date_serv, get_quote_by_id_serv
 from models.response_model import ResponseModel
 # ✅ Create a Blueprint
 quotes_bp = Blueprint('quotes_bp', __name__,url_prefix='/quotes')
@@ -17,3 +17,8 @@ def get_quotes_by_date():
 def get_quotes_by_id():
     quoteId = request.args.get('quoteId', type=int)
     return get_quote_by_id_serv(quoteId)
+
+@quotes_bp.route('/get-quote-number', methods=['GET'])
+def get_quote_no():
+    resp = dict(quoteNo=get_quote_no_serv())
+    return jsonify(resp)
