@@ -22,10 +22,13 @@ def get_quotes_by_date_dao(data):
     return jsonify([u.to_quote_dict() for u in quotesList])
 
 def get_quote_by_id_dao(quoteId):
-    quotesList = QuoteMaster.query.filter(
-                 QuoteMaster.quote_id == quoteId
-                ).order_by(desc(QuoteMaster.quote_seq_no)).all()
-    return jsonify([u.to_quote_dict() for u in quotesList])
+    quote = (
+        QuoteMaster.query
+        .filter(QuoteMaster.quote_id == quoteId)
+        .order_by(desc(QuoteMaster.quote_seq_no))
+        .first()
+        )
+    return jsonify(quote.to_quote_dict() if quote else None)
 
 def get_quote_no_dao():
     latest_quote = (
