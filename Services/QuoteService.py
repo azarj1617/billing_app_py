@@ -1,4 +1,4 @@
-from Dao.QuoteDao import get_all_quotes_dao, get_quote_by_id_dao, get_quote_no_dao, get_quotes_by_date_dao
+from Dao.QuoteDao import get_all_quotes_dao, get_quote_by_id_dao, get_quote_no_dao, get_quotes_by_date_dao, save_quote_dao
 
 
 def get_all_quotes_serv():
@@ -17,3 +17,6 @@ def get_quote_no_serv():
     quoteNumber = latestQNo+1
     latestQuoteNum = "QUO"+"/"+str(quoteNumber)
     return latestQuoteNum
+
+def save_quote_serv(data):
+    return save_quote_dao(data)

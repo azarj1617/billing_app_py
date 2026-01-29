@@ -22,7 +22,7 @@ class QuoteMaster(db.Model):
         lazy="select",   # good for GET APIs
         cascade="all, delete-orphan"
     )
-    customers = db.relationship("Customer", lazy="joined")
+    customers = db.relationship("Customer", lazy="joined",viewonly=True)
     
     def __repr__(self):
         return f"<QuoteMaster {self.name}>"
@@ -45,4 +45,15 @@ class QuoteMaster(db.Model):
             "start_date":data.get("startDate"),
             "end_date": data.get("endDate")
         }
+    
+    def map_quote_data_to_model(data):
+        return {
+            "quote_id":data.get("quoteId"),
+            "customer_id": data.get("customerId"),
+            "quote_seq_no": data.get("quoteSeqNo"),
+            "quote_date": data.get("quoteDate"),
+            "total_amount": data.get("totalAmount"),
+            "quote_no": data.get("quoteNo"),
+            "daily_seq_no": data.get("dailyQuoteNo")
+            }
 
