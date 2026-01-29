@@ -24,8 +24,8 @@ class QuoteMaster(db.Model):
     )
     customers = db.relationship("Customer", lazy="joined",viewonly=True)
     
-    def __repr__(self):
-        return f"<QuoteMaster {self.name}>"
+    # def __repr__(self):
+    #     return f"<QuoteMaster {self.name}>"
 
     def to_quote_dict(self):
         return {

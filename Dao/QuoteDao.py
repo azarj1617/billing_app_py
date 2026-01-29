@@ -40,13 +40,32 @@ def get_quote_no_dao():
         )
     return latest_quote
 
+def get_next_quote_seq_locked(session):
+    # Lock the row with the highest sequence
+    last_quote = (
+        session.query(QuoteMaster)
+        .order_by(QuoteMaster.quote_seq_no.desc())
+        .with_for_update()   # 🔒 CRITICAL
+        .first()
+    )
+
+    if last_quote:
+        return last_quote.quote_seq_no + 1
+    else:
+        return 1
+
 def save_quote_dao(quoteData):
     try: 
+       
+        db.session.begin()
+        
+        latest_quote = get_next_quote_seq_locked(db.session)
+        
         quoteFields = QuoteMaster.map_quote_data_to_model(quoteData)
         quote = QuoteMaster(**quoteFields)
-        latest_quote = get_quote_no_dao()
-        latestSeqNo = latest_quote.quote_seq_no if latest_quote else 0 
-        quoteSeqNo = latestSeqNo+1
+
+        # latestSeqNo = latest_quote.quote_seq_no if latest_quote else 0 
+        quoteSeqNo = latest_quote
         quote.quote_seq_no = quoteSeqNo
         now = datetime.now()
         dateSeq = now.strftime("%Y%m%d")
@@ -54,24 +73,20 @@ def save_quote_dao(quoteData):
         quote.quote_no = latestQuoteNum
         dailyQuoteNo = "QUO/"+str(quoteSeqNo)
         quote.daily_seq_no = dailyQuoteNo
+    
         db.session.add(quote)
-        db.session.flush()
-
+       
         for p in quoteData.get("details", []):
             price = QuoteDetails(**QuoteDetails.map_quote_detail_write(p))
-            if quoteData.get("priceDetails") and len(quoteData["priceDetails"]) > 0:
-                price.price_id = quoteData["priceDetails"][0].get("priceId")
-            else:
-                price.price_id = None
             quote.details.append(price)
             
-            db.session.commit()
-            res = ResponseModel(
-            status="SUCCESS",
-            statusCode=200,
-            message= "Quote Data Saved Successfully" 
-            )
-            return jsonify(res.__dict__), 201
+        db.session.commit()
+        res = ResponseModel(
+        status="SUCCESS",
+        statusCode=200,
+        message= "Quote Data Saved Successfully" 
+        )
+        return jsonify(res.__dict__), 201
     except Exception as e:
         db.session.rollback()
         traceback.print_exc()
@@ -81,3 +96,68 @@ def save_quote_dao(quoteData):
         message="OOPS! Something went wrong"
         )
         return jsonify(res.__dict__)
+    
+def update_quote_dao(quoteId, quoteData):
+    try:
+        db.session.begin() 
+        quote = (
+            db.session.query(QuoteMaster)
+            .filter(QuoteMaster.quote_id == quoteId)
+            .with_for_update()  
+            .one_or_none()
+        )
+
+        if not quote:
+            db.session.rollback()
+            return jsonify({
+                "status": "FAILURE",
+                "message": "Quote not found"
+            }), 404
+
+        # Update master fields
+
+        updated_fields = QuoteMaster.map_quote_data_to_model(quoteData)
+        SKIP_FIELDS = {"quote_id", "quote_date","quote_no","quote_seq_no","quote_detail_id","daily_seq_no"}
+        for key, value in updated_fields.items():
+            if key not in SKIP_FIELDS:
+                setattr(quote, key, value)
+
+        existing_details = QuoteDetails.query.filter_by(quote_id=quoteId).all()
+        existing_map = {d.quote_detail_id: d for d in existing_details}
+        incoming_ids = set()
+
+        for p in quoteData.get("details", []):
+            detail_id = p.get("quoteDetailId")
+
+            if detail_id and detail_id in existing_map:
+                # ✅ UPDATE existing row
+                detail = existing_map[detail_id]
+                mapped = QuoteDetails.map_quote_detail_write(p)
+
+                for k, v in mapped.items():
+                     if k not in SKIP_FIELDS:
+                        setattr(detail, k, v)
+
+                incoming_ids.add(detail_id)
+
+            else:
+                # ✅ INSERT new row
+                new_detail = QuoteDetails(**QuoteDetails.map_quote_detail_write(p))
+                new_detail.quote_id = quoteId
+                db.session.add(new_detail)
+
+        # 5️⃣ Commit everything
+        db.session.commit()
+
+        return jsonify({
+            "status": "SUCCESS",
+            "message": "Quote updated successfully"
+        }), 200
+
+    except Exception:
+        db.session.rollback()
+        traceback.print_exc()
+        return jsonify({
+            "status": "FAILURE",
+            "message": "OOPS! Something went wrong"
+        }), 500

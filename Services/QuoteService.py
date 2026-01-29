@@ -1,4 +1,4 @@
-from Dao.QuoteDao import get_all_quotes_dao, get_quote_by_id_dao, get_quote_no_dao, get_quotes_by_date_dao, save_quote_dao
+from Dao.QuoteDao import get_all_quotes_dao, get_quote_by_id_dao, get_quote_no_dao, get_quotes_by_date_dao, save_quote_dao, update_quote_dao
 
 
 def get_all_quotes_serv():
@@ -19,4 +19,10 @@ def get_quote_no_serv():
     return latestQuoteNum
 
 def save_quote_serv(data):
-    return save_quote_dao(data)
+    quoteId = data.get("quoteId")
+    if data.get("quoteId"):
+        return update_quote_dao(quoteId,data)
+    else:
+        return save_quote_dao(data)
+        
+    
