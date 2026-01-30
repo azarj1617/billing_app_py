@@ -7,8 +7,8 @@ from models.response_model import ResponseModel
 
 customerList = []
 
-def get_all_customers():
-    customerList = Customer.query.all() 
+def get_all_customers(status):
+    customerList = Customer.query.filter(Customer.status==status).all()
     return jsonify([u.to_dict() for u in customerList])
 
 def search_customer_data(searchTerm,status):

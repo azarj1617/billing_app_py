@@ -37,7 +37,7 @@ class QuoteMaster(db.Model):
             "quoteNo" : self.quote_no,
             "dailyQuoteNo" : self.daily_seq_no,
             "details":[a.to_dict() for a in self.details],
-            "customer": ([self.customer.to_dict()] if self.customer else None)
+            "customer": ([self.customer.to_dict()] if self.customer else [])
         }
     
     def map_client_data_to_model(data):

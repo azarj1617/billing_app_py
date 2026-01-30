@@ -146,7 +146,10 @@ def update_quote_dao(quoteId, quoteData):
                 new_detail = QuoteDetails(**QuoteDetails.map_quote_detail_write(p))
                 new_detail.quote_id = quoteId
                 db.session.add(new_detail)
-
+        for delId in quoteData.get("deleteIds", []):
+            detail = existing_map.get(delId)
+            if detail:
+                db.session.delete(detail)
         # 5️⃣ Commit everything
         db.session.commit()
 

@@ -37,7 +37,7 @@ class Customer(db.Model):
             "status" : self.status,
             "priceType" : self.price_type,
             "cusOldNo" : self.cus_old_no,
-            "createdAt": self.created_by.strftime("%d-%m-%Y")
+            "createdAt": self.created_by.strftime("%d-%m-%Y") if self.created_by else None
         }
     
     def map_client_to_model(data):

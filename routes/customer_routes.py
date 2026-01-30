@@ -7,7 +7,8 @@ customer_bp = Blueprint('customer_bp', __name__,url_prefix='/customers')
 
 @customer_bp.route('/get-all-customers', methods=['GET'])
 def get_customers():
-    return get_customers_data()
+    status = request.args.get('status', type=int)
+    return get_customers_data(status)
 
 @customer_bp.route('/search-customer-data', methods=['GET'])
 def search_customer_data():
