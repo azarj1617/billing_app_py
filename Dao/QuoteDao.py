@@ -44,6 +44,7 @@ def get_next_quote_seq_locked(session):
     # Lock the row with the highest sequence
     last_quote = (
         session.query(QuoteMaster)
+        .filter(func.date(QuoteMaster.quote_date) == datetime.today().replace(hour=0, minute=0, second=0, microsecond=0))
         .order_by(QuoteMaster.quote_seq_no.desc())
         .with_for_update()   # 🔒 CRITICAL
         .first()
