@@ -2,6 +2,7 @@ from datetime import datetime
 from operator import and_, or_
 import traceback
 from flask import jsonify
+from Dao.PurchaseDao import update_stock_ledger, update_stock_master
 from extensions import db
 from models.response_model import ResponseModel
 from models.sales.sales_details_model import SalesDetails
@@ -50,9 +51,13 @@ def save_sales_dao(salesData):
         sales.bill_number = latestBillNum
     
         db.session.add(sales)
-       
+        db.session.flush()
+
         for p in salesData.get("details", []):
             sale_data = SalesDetails(**SalesDetails.map_sales_detail_write(p))
+            sale_data.sales_id = sales.sales_id
+            update_stock_master(sale_data,p,"SALE")  
+            update_stock_ledger(sale_data,p,"SALE")                     
             sales.details.append(sale_data)
             
         db.session.commit()

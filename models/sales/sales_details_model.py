@@ -35,7 +35,7 @@ class SalesDetails(db.Model):
     price_id = db.Column(db.Integer)
     items = db.relationship("Item", lazy="joined")
     def __repr__(self):
-        return f"<SalesDetails {self.name}>"
+        return f"<SalesDetails {self.sales_id}>"
 
     def to_dict(self):
         itemData = self.items.item_to_dict()
