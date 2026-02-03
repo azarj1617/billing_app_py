@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from Services.SalesService import get_bill_by_id_serv
+from Services.SalesService import get_bill_by_date_serv, get_bill_by_id_serv, get_latest_bill_no_serv, save_sales_serv
 from models.response_model import ResponseModel
 # ✅ Create a Blueprint
 sales_bp = Blueprint('sales_bp', __name__,url_prefix='/sales')
@@ -10,23 +10,17 @@ def get_bill_by_id():
     return get_bill_by_id_serv(salesId)
 
 
-# @quotes_bp.route('/getQuotesByDate', methods=['POST'])
-# def get_quotes_by_date():
-#     data = request.get_json()
-#     return get_quotes_by_date_serv(data)
+@sales_bp.route('/get-bills-by-date', methods=['POST'])
+def get_quotes_by_date():
+    data = request.get_json()
+    return get_bill_by_date_serv(data)
 
-# @quotes_bp.route('/getQuoteById', methods=['GET'])
-# def get_quotes_by_id():
-#     quoteId = request.args.get('quoteId', type=int)
-#     return get_quote_by_id_serv(quoteId)
+@sales_bp.route('/get-latest-bill-no', methods=['GET'])
+def get_latest_bill_no():
+    return get_latest_bill_no_serv()
 
-# @quotes_bp.route('/get-quote-number', methods=['GET'])
-# def get_quote_no():
-#     resp = dict(quoteNo=get_quote_no_serv())
-#     return jsonify(resp)
 
-# @quotes_bp.route('/saveQuote', methods=['POST'])
-# def save_quote():
-#     data = request.get_json()
-#     return save_quote_serv(data)
-
+@sales_bp.route('/saveSales', methods=['POST'])
+def save_sales_data():
+    data = request.get_json()
+    return save_sales_serv(data)
