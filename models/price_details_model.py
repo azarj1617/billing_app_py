@@ -5,7 +5,7 @@ class PriceDetails(db.Model):
     price_id = db.Column(db.Integer, primary_key=True)
     item_id = db.Column(
         db.Integer,
-        db.ForeignKey("item_master.item_id"),  # 🔥 MUST MATCH
+        db.ForeignKey("item_master.item_id"),
         nullable=False
     )
     mrp = db.Column(db.Numeric(10, 2))
